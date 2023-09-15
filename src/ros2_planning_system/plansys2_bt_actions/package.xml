@@ -5,7 +5,7 @@
   <version>1.0.10</version>
   
   <description>This package contains the Problem Expert module for the ROS2 Planning System</description>
-sfsf
+
   <maintainer email="fmrico@gmail.com">Francisco Martin Rico</maintainer>
  
   <license>Apache License, Version 2.0</license>
