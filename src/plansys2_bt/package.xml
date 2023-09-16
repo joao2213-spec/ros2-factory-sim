@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>plansys2_bt_example</name>
+  <name>plansys2_bt</name>
   <version>0.0.4</version>
   
   <description>A simple example of ROS2 Planning System</description>

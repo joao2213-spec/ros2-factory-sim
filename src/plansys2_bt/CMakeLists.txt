@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(plansys2_bt_example)
-
+project(plansys2_bt)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -39,41 +38,17 @@ set(dependencies
 
 include_directories(include)
 
-add_library(plansys2_recharge_bt_node SHARED src/behavior_tree_nodes/Recharge.cpp)
-list(APPEND plugin_libs plansys2_recharge_bt_node)
-
-add_library(plansys2_close_gripper_bt_node SHARED src/behavior_tree_nodes/CloseGripper.cpp)
-list(APPEND plugin_libs plansys2_close_gripper_bt_node)
-
-add_library(plansys2_open_gripper_bt_node SHARED src/behavior_tree_nodes/OpenGripper.cpp)
-list(APPEND plugin_libs plansys2_open_gripper_bt_node)
-
 add_library(plansys2_move_bt_node SHARED src/behavior_tree_nodes/Move.cpp)
 list(APPEND plugin_libs plansys2_move_bt_node)
-
-add_library(plansys2_approach_object_bt_node SHARED src/behavior_tree_nodes/ApproachObject.cpp)
-list(APPEND plugin_libs plansys2_approach_object_bt_node)
 
 foreach(bt_plugin ${plugin_libs})
   ament_target_dependencies(${bt_plugin} ${dependencies})
   target_compile_definitions(${bt_plugin} PRIVATE BT_PLUGIN_EXPORT)
 endforeach()
 
-add_executable(assemble_action_node src/assemble_action_node.cpp)
-ament_target_dependencies(assemble_action_node ${dependencies})
-
-add_executable(assemble_controller_node src/assemble_controller_node.cpp)
-ament_target_dependencies(assemble_controller_node ${dependencies})
-
-add_executable(nav2_sim_node src/nav2_sim_node.cpp)
-ament_target_dependencies(nav2_sim_node ${dependencies})
-
 install(DIRECTORY launch pddl behavior_trees_xml config DESTINATION share/${PROJECT_NAME})
 
 install(TARGETS
-  assemble_action_node
-  assemble_controller_node
-  nav2_sim_node
   ${plugin_libs}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
