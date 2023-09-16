@@ -54,6 +54,23 @@ Move::Move(
 void
 Move::on_tick()
 {
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
+  std::cout << "Executing shell command...\n";
   rclcpp::Node::SharedPtr node;
   config().blackboard->get("node", node);
 

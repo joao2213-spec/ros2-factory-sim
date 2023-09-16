@@ -70,7 +70,7 @@ colcon build
 
 colcon build --symlink-install
 ros2 launch carter_navigation multiple_robot_carter_navigation_office.launch.py
-ros2 launch plansys2_bt_example plansys2_bt_example_launch.py
+ros2 launch plansys2_bt plansys2_bt_launch.py
 ros2 run plansys2_terminal plansys2_terminal
 
 
