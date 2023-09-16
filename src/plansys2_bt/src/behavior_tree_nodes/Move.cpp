@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include "plansys2_bt/behavior_tree_nodes/Move.hpp"
+#include "behavior_tree_nodes/Move.hpp"
 
 
 #include "geometry_msgs/msg/pose2_d.hpp"
