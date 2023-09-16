@@ -1,7 +1,7 @@
 # ros2-factory-sim
  An integrated simulation of a factory environment using ROS2, PlanSys2, Nav2, and Isaac Sim. Features three robots executing smart navigation and package handling plans.
  
-This README.md provides step-by-step instructions for setting up and using the **Tese** project. Follow the guidelines below to install dependencies, configure your environment, and avoid known bugs.
+This README.md provides step-by-step instructions for setting up and using the project. Follow the guidelines below to install dependencies, configure your environment, and avoid known bugs.
 
 ## Installation
 
