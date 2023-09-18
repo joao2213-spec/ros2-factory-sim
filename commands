@@ -1,8 +1,8 @@
 set instance carter1 robot
 set instance start_point point
-set instance end_point point
+set instance wheels_zone point
 
 set predicate (robot_at carter1 start_point)
 
-set goal (and(robot_at carter1 end_point))
+set goal (and(robot_at carter1 wheels_zone))
 run
