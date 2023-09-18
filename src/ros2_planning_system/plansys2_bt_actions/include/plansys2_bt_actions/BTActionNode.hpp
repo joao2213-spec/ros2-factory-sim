@@ -53,7 +53,7 @@ public:
     if (getInput("server_name", remapped_action_name)) {
       action_name_ = remapped_action_name;
     }
-    createActionClient(action_name_);
+    //createActionClient(action_name_);
 
     // Give the derive class a chance to do any initialization
     RCLCPP_INFO(node_->get_logger(), "\"%s\" BtActionNode initialized", xml_tag_name.c_str());
@@ -134,7 +134,7 @@ public:
   {
     // first step to be done only at the beginning of the Action
     if (status() == BT::NodeStatus::IDLE) {
-      createActionClient(action_name_);
+      //createActionClient(action_name_);
 
       // setting the status to RUNNING to notify the BT Loggers (if any)
       setStatus(BT::NodeStatus::RUNNING);

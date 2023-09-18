@@ -21,14 +21,13 @@ Move::Move(
   const BT::NodeConfiguration & conf)
 : plansys2::BtActionNode<nav2_msgs::action::NavigateToPose>(xml_tag_name, action_name, conf)
 {
-  std::cout << "Hello, World!" << std::endl;
+
   rclcpp::Node::SharedPtr node;
   config().blackboard->get("node", node);
-  std::cout << "Hello, World!" << std::endl;
-  std::cout << "Hello, World!" << std::endl;
+
   node->declare_parameter("waypoints");
   node->declare_parameter("waypoint_coords");
-  std::cout << "Hello, World!" << std::endl;
+
   if (node->has_parameter("waypoints")) {
     std::vector<std::string> wp_names;
 
@@ -50,11 +49,18 @@ Move::Move(
       }
     }
   }
+
 }
 
 void
 Move::on_tick()
 {
+  //std::cout << "Hello, World!" << std::endl;
+  std::string robot;
+  getInput<std::string>("robot", robot);
+  action_name_ = robot + "/navigate_to_pose";
+  createActionClient(action_name_);
+
   rclcpp::Node::SharedPtr node;
   config().blackboard->get("node", node);
 
@@ -96,7 +102,7 @@ BT_REGISTER_NODES(factory)
     [](const std::string & name, const BT::NodeConfiguration & config)
     {
       return std::make_unique<plansys2_bt_tests::Move>(
-        name, "carter1/navigate_to_pose", config);
+        name, "default_dump", config);
     };
 
   factory.registerBuilder<plansys2_bt_tests::Move>(

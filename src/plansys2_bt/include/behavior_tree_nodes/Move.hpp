@@ -29,6 +29,7 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
+      BT::InputPort<std::string>("robot"),
       BT::InputPort<std::string>("goal")
     };
   }
