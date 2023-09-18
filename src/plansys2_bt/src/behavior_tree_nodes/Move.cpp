@@ -1,72 +1,104 @@
+#include <string>
+#include <iostream>
+#include <vector>
+#include <memory>
+
 #include "behavior_tree_nodes/Move.hpp"
+
+#include "geometry_msgs/msg/pose2_d.hpp"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+
+#include "behaviortree_cpp_v3/behavior_tree.h"
+
+#include "rclcpp_lifecycle/lifecycle_node.hpp"
 
 namespace plansys2_bt_tests
 {
 
 Move::Move(
-  const std::string & name,
-  const BT::NodeConfiguration & config)
-: BT::SyncActionNode(name, config), node_(rclcpp::Node::make_shared("move_action_node"))
+  const std::string & xml_tag_name,
+  const std::string & action_name,
+  const BT::NodeConfiguration & conf)
+: plansys2::BtActionNode<nav2_msgs::action::NavigateToPose>(xml_tag_name, action_name, conf)
 {
-  action_client_ = rclcpp_action::create_client<nav2_msgs::action::NavigateToPose>(
-    node_, "/carter1/navigate_to_pose");
+  std::cout << "Hello, World!" << std::endl;
+  rclcpp::Node::SharedPtr node;
+  config().blackboard->get("node", node);
+  std::cout << "Hello, World!" << std::endl;
+  std::cout << "Hello, World!" << std::endl;
+  node->declare_parameter("waypoints");
+  node->declare_parameter("waypoint_coords");
+  std::cout << "Hello, World!" << std::endl;
+  if (node->has_parameter("waypoints")) {
+    std::vector<std::string> wp_names;
+
+    node->get_parameter_or("waypoints", wp_names, {});
+
+    for (auto & wp : wp_names) {
+      node->declare_parameter("waypoint_coords." + wp);
+
+      std::vector<double> coords;
+      if (node->get_parameter_or("waypoint_coords." + wp, coords, {})) {
+        geometry_msgs::msg::Pose2D pose;
+        pose.x = coords[0];
+        pose.y = coords[1];
+        pose.theta = coords[2];
+
+        waypoints_[wp] = pose;
+      } else {
+        std::cerr << "No coordinate configured for waypoint [" << wp << "]" << std::endl;
+      }
+    }
+  }
 }
 
-BT::NodeStatus Move::tick()
+void
+Move::on_tick()
 {
-  std::string robot;
-  getInput<std::string>("robot", robot);
+  rclcpp::Node::SharedPtr node;
+  config().blackboard->get("node", node);
 
-  std::string goal_str;
-  getInput<std::string>("goal", goal_str);
+  std::string goal;
+  getInput<std::string>("goal", goal);
 
-  std::vector<std::string> coords;
-  std::istringstream iss(goal_str);
-  std::string s;
-  while (getline(iss, s, ',')) {
-    coords.push_back(s);
-  }
-
-  if (coords.size() != 2) {
-    return BT::NodeStatus::FAILURE;
-  }
-
-  double goal_x = std::stod(coords[0]);
-  double goal_y = std::stod(coords[1]);
-
-  nav2_msgs::action::NavigateToPose::Goal goal_msg;
-  goal_msg.pose.header.frame_id = "map";
-  goal_msg.pose.pose.position.x = goal_x;
-  goal_msg.pose.pose.position.y = goal_y;
-  goal_msg.pose.pose.orientation.w = 1.0;
-
-  auto future_goal_handle = action_client_->async_send_goal(goal_msg);
-  if (rclcpp::spin_until_future_complete(node_, future_goal_handle) !=
-    rclcpp::executor::FutureReturnCode::SUCCESS)
-  {
-    return BT::NodeStatus::FAILURE;
-  }
-
-  auto goal_handle = future_goal_handle.get();
-  if (!goal_handle) {
-    return BT::NodeStatus::FAILURE;
-  }
-
-  auto future_result = action_client_->async_get_result(goal_handle);
-  rclcpp::spin_until_future_complete(node_, future_result);
-
-  auto result = future_result.get();
-  if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
-    return BT::NodeStatus::SUCCESS;
+  geometry_msgs::msg::Pose2D pose2nav;
+  if (waypoints_.find(goal) != waypoints_.end()) {
+    pose2nav = waypoints_[goal];
   } else {
-    return BT::NodeStatus::FAILURE;
+    std::cerr << "No coordinate for waypoint [" << goal << "]" << std::endl;
   }
+
+  geometry_msgs::msg::PoseStamped goal_pos;
+
+  goal_pos.header.frame_id = "map";
+  goal_pos.header.stamp = node->now();
+  goal_pos.pose.position.x = pose2nav.x;
+  goal_pos.pose.position.y = pose2nav.y;
+  goal_pos.pose.position.z = 0;
+  goal_pos.pose.orientation = tf2::toMsg(tf2::Quaternion({0.0, 0.0, 1.0}, pose2nav.theta));
+
+  goal_.pose = goal_pos;
 }
+
+BT::NodeStatus
+Move::on_success()
+{
+  return BT::NodeStatus::SUCCESS;
+}
+
 
 }  // namespace plansys2_bt_tests
 
 #include "behaviortree_cpp_v3/bt_factory.h"
 BT_REGISTER_NODES(factory)
 {
-  factory.registerNodeType<plansys2_bt_tests::Move>("Move");
+  BT::NodeBuilder builder =
+    [](const std::string & name, const BT::NodeConfiguration & config)
+    {
+      return std::make_unique<plansys2_bt_tests::Move>(
+        name, "carter1/navigate_to_pose", config);
+    };
+
+  factory.registerBuilder<plansys2_bt_tests::Move>(
+    "Move", builder);
 }
