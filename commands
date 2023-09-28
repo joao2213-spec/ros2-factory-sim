@@ -1,8 +1,11 @@
 set instance carter1 robot
-set instance start_point point
-set instance wheels_zone point
+set instance package1 package
+set instance package_station point
+set instance storage point
+set instance charging_station point
 
-set predicate (robot_at carter1 start_point)
+set predicate (robot_at carter1 charging_station)
+set predicate (package_at package1 package_station)
 
-set goal (and(robot_at carter1 wheels_zone))
+set goal (and(package_at package1 storage))
 run
