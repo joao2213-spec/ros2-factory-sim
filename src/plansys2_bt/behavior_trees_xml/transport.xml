@@ -1,0 +1,11 @@
+<root main_tree_to_execute = "MainTree" >
+    <BehaviorTree ID="MainTree">
+       <Sequence name="root_sequence">
+           <OpenGripper    name="open_gripper" robot="${arg0}"/>
+           <CloseGripper   name="close_gripper" robot="${arg0}"/>
+           <Move           name="move" robot="${arg0}" goal="${arg2}"/>
+           <OpenGripper    name="open_gripper" robot="${arg0}"/>
+           <CloseGripper   name="close_gripper" robot="${arg0}"/>
+       </Sequence>
+    </BehaviorTree>
+</root>

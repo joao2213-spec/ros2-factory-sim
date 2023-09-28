@@ -55,7 +55,7 @@ Move::Move(
 void
 Move::on_tick()
 {
-  //std::cout << "Hello, World!" << std::endl;
+
   std::string robot;
   getInput<std::string>("robot", robot);
   action_name_ = robot + "/navigate_to_pose";
@@ -102,7 +102,7 @@ BT_REGISTER_NODES(factory)
     [](const std::string & name, const BT::NodeConfiguration & config)
     {
       return std::make_unique<plansys2_bt_tests::Move>(
-        name, "default_dump", config);
+        name, "default", config);
     };
 
   factory.registerBuilder<plansys2_bt_tests::Move>(
